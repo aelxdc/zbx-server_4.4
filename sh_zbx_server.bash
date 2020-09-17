@@ -12,7 +12,8 @@ echo "
 Instalando aplicações
 
 "
-apt install mariadb-server zabbix-proxy-mysql snmp snmp-mibs-downloader -y
+apt install mariadb-server zabbix-server-mysql zabbix-frontend-php \\
+zabbix-apache-conf zabbix-agent snmp snmp-mibs-downloader apache2 -y
 
 mv /etc/snmp/snmp.conf /etc/snmp/Old_snmp.conf
 echo "
@@ -24,17 +25,17 @@ mibAllowUnderline 1
 " > /etc/snmp/snmp.conf
 cp mibs_conectcor/* /usr/share/snmp/mibs/
 
-echo "Creating database zabbix_proxy"
-mysql -e "create database zabbix_proxy character set utf8 collate utf8_bin;"
+echo "Creating database zabbix"
+mysql -e "create database zabbix character set utf8 collate utf8_bin;"
 
-echo "Creating user zabbix_proxy"
-mysql -e "create user zabbix_proxy@localhost identified by '$SENHA';"
+echo "Creating user zabbix"
+mysql -e "create user zabbix@localhost identified by '$SENHA';"
 
 echo "Grant permissions on tables"
-mysql -e "grant all privileges on zabbix_proxy.* to zabbix_proxy@localhost;"
+mysql -e "grant all privileges on zabbix.* to zabbix@localhost;"
 
 echo "Importing zabbix schema to DB"
-zcat /usr/share/doc/zabbix-proxy-mysql/schema.sql.gz | mysql -uzabbix_proxy -p$SENHA zabbix_proxy
+zcat /usr/share/doc/zabbix-server-mysql/schema.sql.gz | mysql -uzabbix -p$SENHA zabbix
 
 
 sed -i "s@Server=127.0.0.1@Server=$SERVIDOR@g" /etc/zabbix/zabbix_proxy.conf
@@ -43,5 +44,5 @@ sed -i "s@DBUser=zabbix@DBUser="zabbix_proxy"@g" /etc/zabbix/zabbix_proxy.conf
 sed -i "s@# DBPassword=@ DBPassword=$SENHA@g" /etc/zabbix/zabbix_proxy.conf
 
 
-systemctl enable zabbix-proxy.service
-systemctl restart zabbix-proxy.service
+systemctl enable zabbix-server.service
+systemctl restart zabbix-server.service
