@@ -50,7 +50,7 @@ zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uzabbix -p$SENHA 
 
 sed -i "s@Server=127.0.0.1@Server=$SERVIDOR@g" /etc/zabbix/zabbix_server.conf
 sed -i "s@Hostname=Zabbix server@Hostname=$HOSTNAME@g" /etc/zabbix/zabbix_server.conf
-sed -i "s@DBUser=zabbix@DBUser="zabbix_proxy"@g" /etc/zabbix/zabbix_server.conf
+sed -i "s@DBUser=zabbix@DBUser="zabbix"@g" /etc/zabbix/zabbix_server.conf
 sed -i "s@# DBPassword=@ DBPassword=$SENHA@g" /etc/zabbix/zabbix_server.conf
 
 
