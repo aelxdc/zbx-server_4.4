@@ -12,11 +12,17 @@ echo "
 Instalando aplicações
 
 "
-apt install mariadb-server apache2 php7.2 php7.2-bz2 php7.2-snmp php7.2-zip php7.2-xml php7.2-mysql php7.2-json php7.2-imap php7.2-fpm php7.2-dev php7.2-curl -y
+apt install mariadb-server mariadb-client apache2 libapache2-mod-php php php-mysql php-cli php-pear php-gmp php-gd php-bcmath php-mbstring php-curl php-xml php-zip -y
 apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-agent snmp snmp-mibs-downloader -y
 
+a2enmod rewrite
+
+sed -i 's/ServerTokens OS/ServerTokens Prod/' /etc/apache2/conf-available/security.conf
+sed -i 's/ServerSignature On/ServerSignature Off/' /etc/apache2/conf-available/security.conf
+sed -i "s@;date.timezone =@date.timezone = America/Sao_Paulo@g" /etc/php/7.2/apache2/php.ini
 
 systemctl reload apache2
+systemctl enable apache2
 
 mv /etc/snmp/snmp.conf /etc/snmp/Old_snmp.conf
 echo "
@@ -39,7 +45,7 @@ echo "Grant permissions on tables"
 mysql -e "grant all privileges on zabbix.* to zabbix@localhost;"
 
 echo "Importing zabbix schema to DB"
-zcat /usr/share/zabbix-server-mysql/schema.sql.gz | mysql -uzabbix -p$SENHA zabbix
+zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uzabbix -p$SENHA zabbix
 
 
 sed -i "s@Server=127.0.0.1@Server=$SERVIDOR@g" /etc/zabbix/zabbix_server.conf
