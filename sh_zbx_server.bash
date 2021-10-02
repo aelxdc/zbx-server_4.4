@@ -12,8 +12,11 @@ echo "
 Instalando aplicações
 
 "
-apt install mariadb-server zabbix-server-mysql zabbix-frontend-php \\
-zabbix-apache-conf zabbix-agent snmp snmp-mibs-downloader apache2 php7.2* -y
+apt install mariadb-server apache2 php7.2 php7.2-bz2 php7.2-snmp php7.2-zip php7.2-xml php7.2-mysql php7.2-json php7.2-imap php7.2-fpm php7.2-dev php7.2-curl -y
+apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-agent snmp snmp-mibs-downloader -y
+
+
+systemctl reload apache2
 
 mv /etc/snmp/snmp.conf /etc/snmp/Old_snmp.conf
 echo "
